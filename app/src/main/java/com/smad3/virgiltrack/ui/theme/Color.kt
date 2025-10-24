@@ -1,4 +1,4 @@
-package com.oleksandrsiroklyn.virgiltrack.ui.theme
+package com.smad3.virgiltrack.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

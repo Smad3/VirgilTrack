@@ -1,6 +1,5 @@
-package com.oleksandrsiroklyn.virgiltrack.ui.theme
+package com.smad3.virgiltrack.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

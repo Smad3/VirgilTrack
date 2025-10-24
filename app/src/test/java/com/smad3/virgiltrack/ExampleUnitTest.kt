@@ -1,8 +1,7 @@
-package com.oleksandrsiroklyn.virgiltrack
-
-import org.junit.Test
+package com.smad3.virgiltrack
 
 import org.junit.Assert.*
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
