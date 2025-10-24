@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
+/**
+ * Defines a custom field for a given Category. Example: Category "Movie" has a TemplateField "Director".
+ */
 @Entity(
     tableName = "template_fields",
     foreignKeys = [
@@ -18,8 +21,8 @@ import androidx.room.PrimaryKey
 data class TemplateField(
     @PrimaryKey(autoGenerate = true)
     val fieldId: Long = 0,
-    val categoryOwnerId: Long,
+    val categoryOwnerId: Long, // Foreign key to Category
     val fieldName: String,
-    val fieldType: FieldType,
+    val fieldType: FieldType, // Enum: TEXT, NUMBER, DATE, BOOLEAN
     val isTitle: Boolean
 )

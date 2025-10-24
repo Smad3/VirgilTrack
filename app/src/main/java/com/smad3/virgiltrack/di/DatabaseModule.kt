@@ -20,7 +20,10 @@ object DatabaseModule {
         context,
         AppDatabase::class.java,
         AppDatabase.DATABASE_NAME
-    ).build()
+    )
+    // In a real app, you would add a migration strategy here when incrementing the version.
+    .fallbackToDestructiveMigration()
+    .build()
 
     @Provides
     @Singleton
@@ -40,10 +43,6 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideSeasonDao(db: AppDatabase) = db.seasonDao()
-
-    @Provides
-    @Singleton
-    fun provideEpisodeDao(db: AppDatabase) = db.episodeDao()
+    fun provideItemRelationshipDao(db: AppDatabase) = db.itemRelationshipDao()
 
 }

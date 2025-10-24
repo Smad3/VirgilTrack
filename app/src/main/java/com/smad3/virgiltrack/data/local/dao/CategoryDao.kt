@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.smad3.virgiltrack.data.local.model.Category
 import kotlinx.coroutines.flow.Flow
 
@@ -15,9 +14,6 @@ interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCategory(category: Category)
 
-    @Update
-    suspend fun updateCategory(category: Category)
-
     @Delete
     suspend fun deleteCategory(category: Category)
 
@@ -25,5 +21,5 @@ interface CategoryDao {
     fun getAllCategories(): Flow<List<Category>>
 
     @Query("SELECT * FROM categories WHERE categoryId = :categoryId")
-    fun getCategoryById(categoryId: Long): Flow<Category>
+    fun getCategoryById(categoryId: Long): Flow<Category?>
 }

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.smad3.virgiltrack.presentation.categorylist.CategoryListScreen
+import com.smad3.virgiltrack.presentation.AppScaffold
 import com.smad3.virgiltrack.ui.theme.VirgilTrackTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             VirgilTrackTheme {
-                CategoryListScreen()
+                AppScaffold()
             }
         }
     }

@@ -17,12 +17,12 @@ class CategoryRepositoryImpl @Inject constructor(
         return categoryDao.getAllCategories()
     }
 
-    override fun getCategoryById(categoryId: Long): Flow<Category> {
-        return categoryDao.getCategoryById(categoryId)
-    }
-
     override suspend fun addCategory(category: Category) {
         categoryDao.insertCategory(category)
+    }
+
+    override suspend fun deleteCategory(category: Category) {
+        categoryDao.deleteCategory(category)
     }
 
     override fun getFieldsForCategory(categoryId: Long): Flow<List<TemplateField>> {

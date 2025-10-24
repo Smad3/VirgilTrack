@@ -15,7 +15,4 @@ interface TemplateFieldDao {
 
     @Query("SELECT * FROM template_fields WHERE categoryOwnerId = :categoryId ORDER BY fieldName ASC")
     fun getFieldsForCategory(categoryId: Long): Flow<List<TemplateField>>
-    
-    @Query("SELECT * FROM template_fields WHERE categoryOwnerId = :categoryId AND isTitle = 1 LIMIT 1")
-    fun getTitleFieldForCategory(categoryId: Long): Flow<TemplateField?>
 }

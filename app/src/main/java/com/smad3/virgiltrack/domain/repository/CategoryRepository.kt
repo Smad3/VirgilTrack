@@ -4,13 +4,16 @@ import com.smad3.virgiltrack.data.local.model.Category
 import com.smad3.virgiltrack.data.local.model.TemplateField
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Repository for managing node *types* (Categories) and their field definitions (TemplateFields).
+ */
 interface CategoryRepository {
 
     fun getAllCategories(): Flow<List<Category>>
 
-    fun getCategoryById(categoryId: Long): Flow<Category>
-
     suspend fun addCategory(category: Category)
+
+    suspend fun deleteCategory(category: Category)
 
     fun getFieldsForCategory(categoryId: Long): Flow<List<TemplateField>>
 
