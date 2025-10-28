@@ -6,6 +6,7 @@ import com.smad3.virgiltrack.data.local.dao.MediaItemDao
 import com.smad3.virgiltrack.data.local.model.FieldValue
 import com.smad3.virgiltrack.data.local.model.ItemRelationship
 import com.smad3.virgiltrack.data.local.model.MediaItem
+import com.smad3.virgiltrack.data.local.model.relations.MediaItemWithTitle
 import com.smad3.virgiltrack.domain.repository.MediaRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -28,20 +29,20 @@ class MediaRepositoryImpl @Inject constructor(
         return fieldValueDao.getFieldValuesForItem(itemId)
     }
 
+    override fun getMediaItemsForCategory(categoryId: Long): Flow<List<MediaItemWithTitle>> {
+        return mediaItemDao.getMediaItemsWithTitle(categoryId)
+    }
+
     override suspend fun addChildItem(
         childItem: MediaItem,
         childFieldValues: List<FieldValue>,
         parentId: Long,
         orderIndex: Int
     ) {
-        // 1. Insert the new item and get its ID
         val newChildId = mediaItemDao.insertMediaItem(childItem)
-
-        // 2. Update field values with the new ID and insert them
         val valuesWithCorrectId = childFieldValues.map { it.copy(itemOwnerId = newChildId) }
         fieldValueDao.insertFieldValues(valuesWithCorrectId)
 
-        // 3. Create the relationship
         val relationship = ItemRelationship(
             parentId = parentId,
             childId = newChildId,
@@ -51,10 +52,7 @@ class MediaRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addRootItem(item: MediaItem, values: List<FieldValue>) {
-        // 1. Insert the new item and get its ID
         val newItemId = mediaItemDao.insertMediaItem(item)
-
-        // 2. Update field values with the new ID and insert them
         val valuesWithCorrectId = values.map { it.copy(itemOwnerId = newItemId) }
         fieldValueDao.insertFieldValues(valuesWithCorrectId)
     }

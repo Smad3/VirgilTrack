@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.smad3.virgiltrack.data.local.model.MediaItem
+import com.smad3.virgiltrack.data.local.model.relations.MediaItemWithTitle
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,10 +17,6 @@ interface MediaItemDao {
     @Query("SELECT * FROM media_items WHERE itemId = :itemId")
     fun getMediaItemById(itemId: Long): Flow<MediaItem?>
 
-    /**
-     * Gets all direct children of a given parent item, ordered by the specified index.
-     * This is a key query for the new graph architecture.
-     */
     @Query("""
         SELECT i.* FROM media_items as i
         INNER JOIN item_relationships as r ON i.itemId = r.childId
@@ -28,13 +25,18 @@ interface MediaItemDao {
     """)
     fun getChildItems(parentId: Long): Flow<List<MediaItem>>
 
-    /**
-     * Gets root items (items that are not a child of any other item) of a specific category.
-     * Useful for displaying top-level items like "Movies" or "TV Shows".
-     */
     @Query("""
         SELECT * FROM media_items 
         WHERE categoryOwnerId = :categoryId AND itemId NOT IN (SELECT childId FROM item_relationships)
     """)
     fun getRootItemsForCategory(categoryId: Long): Flow<List<MediaItem>>
+    
+    @Query("""
+        SELECT mi.itemId, fv.value as title
+        FROM media_items mi
+        JOIN field_values fv ON mi.itemId = fv.itemOwnerId
+        JOIN template_fields tf ON fv.fieldOwnerId = tf.fieldId
+        WHERE mi.categoryOwnerId = :categoryId AND tf.isTitle = 1
+    """)
+    fun getMediaItemsWithTitle(categoryId: Long): Flow<List<MediaItemWithTitle>>
 }

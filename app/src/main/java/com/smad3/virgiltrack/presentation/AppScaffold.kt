@@ -15,9 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smad3.virgiltrack.data.local.model.Category
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.smad3.virgiltrack.presentation.categorylist.CategoryListScreen
 import com.smad3.virgiltrack.presentation.categorylist.CategoryListViewModel
+import com.smad3.virgiltrack.presentation.medialist.MediaListScreen
 import com.smad3.virgiltrack.ui.theme.VirgilTrackTheme
 import kotlinx.coroutines.launch
 
@@ -29,12 +35,19 @@ fun AppScaffold() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val categoryViewModel: CategoryListViewModel = hiltViewModel()
+    val navController = rememberNavController()
 
-    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    val title = when {
+        currentRoute?.startsWith("media_list/") == true -> currentBackStackEntry?.arguments?.getString("categoryName") ?: "Items"
+        else -> "VirgilTrack"
+    }
 
     AppScaffoldContent(
         drawerState = drawerState,
-        title = selectedCategory?.name ?: "VirgilTrack",
+        title = title,
         onMenuClick = {
             scope.launch {
                 drawerState.open()
@@ -45,23 +58,34 @@ fun AppScaffold() {
             CategoryListScreen(
                 viewModel = categoryViewModel,
                 onCategoryClick = { category ->
-                    selectedCategory = category
+                    navController.navigate("media_list/${category.categoryId}/${category.name}")
                     scope.launch { drawerState.close() }
                 }
             )
         }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        NavHost(
+            navController = navController,
+            startDestination = "welcome",
+            modifier = Modifier.padding(paddingValues)
         ) {
-            if (selectedCategory != null) {
-                Text(text = "Main content for ${selectedCategory!!.name}")
-            } else {
-                Text(text = "Welcome! Select a category from the drawer.")
+            composable("welcome") {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text("Welcome! Select a category from the drawer.")
+                }
+            }
+            composable(
+                route = "media_list/{categoryId}/{categoryName}",
+                arguments = listOf(
+                    navArgument("categoryId") { type = NavType.LongType },
+                    navArgument("categoryName") { type = NavType.StringType }
+                )
+            ) {
+                MediaListScreen()
             }
         }
     }
